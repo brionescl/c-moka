@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+    <style>
+        body, html {
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="card text-white bg-dark mb-3" style="height: 100%;">
+        <div class="card-header">
+            <strong><span id="minutesLeft">0</span> minutes left for next coffee</strong>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title text-center">
+                You have <span id="cupsOfCoffee">0</span> cups of coffee
+            </h4>
+            <p class="card-text text-center">
+                <button id="makeCoffee" class="btn btn-primary">
+                    <img src="../assets/images/moka.png" width="70px" height="70px" />
+                </button>
+            </p>
+        </div>
+    </div>
+    <script>
+        const { ipcRenderer } = require('electron')
+
+        ipcRenderer.on('set-app-name', (event, appName) => {
+            document.title = appName
+        })
+
+        ipcRenderer.on('set-cups-of-coffee', (event, cups) => {
+            document.querySelector('#cupsOfCoffee').innerHTML = cups
+        })
+
+        ipcRenderer.on('set-minutes-left', (event, minutes) => {
+            document.querySelector('#minutesLeft').innerHTML = minutes
+        })
+
+        const btnMakeCoffee = document.querySelector('#makeCoffee')
+        btnMakeCoffee.addEventListener('click', event => {
+            ipcRenderer.send('add-coffee');
+        })
+    </script>
+</body>
+</html>
